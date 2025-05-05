@@ -1,4 +1,5 @@
 import random
+from logic_func import *
 
 # list of card names and ranks
 suits = ["Clubs", "Hearts", "Diamonds", "Spades"]
@@ -14,16 +15,103 @@ deck = [(rank, suit) for suit in suits for rank in ranks]
 random.shuffle(deck)
 
 # Deal 8 cards to each player
-player1_cards = deck[:8]
-player2_cards = deck[8:16]
+player_cards = deck[:8]
+computer_cards = deck[8:16]
 
 # Deck remainder
 deck_remainder = deck[16:]
 
 # Initializing player scored
-player1_score = 0
-player2_score = 0
+player_score = 0
+computer_score = 0
 
 # Initializing current round and leading player
 current_round = 1
-winning_player = random.choice([1, 2]) # random player leads first
+leading_player = random.choice([1, 2]) # random player leads first
+
+# Game loop
+while current_round <= 16:
+    # Display current round
+    print(f"Round {current_round}")
+
+    # Display leading player
+    print(f"Leading player: Player {leading_player}")
+
+    # Display player cards
+    print(f"Player 1 cards: {player_cards}")
+    if leading_player == 1:
+        while True:
+            decision = input("Choose a card to play (Ace, 2, 3, 4, 5, 6, 7, 8, 9, 10, Jack, Queen): ").strip()
+            rank, _,suit = decision.partition(' of ')
+            player_card = (rank, suit)
+            if player_card in player_cards:
+                player_cards.remove(player_card) # removes card from player's hand 
+                break
+            print("Invalid card. Please choose a card from your hand.")
+        
+        # Computer's turn if player is leading
+        lead_suit = player_card[1]
+        computer_card = follow_suit(computer_cards, lead_suit)
+        computer_cards.remove(computer_card) ## removes card from computer's hand
+    else:
+        # If computer is leading
+        computer_card = random.choice(computer_cards)
+        lead_suit = computer_card[1]
+        print(f"Computer leads with {computer_card[0]} of {computer_card[1]}")
+        
+        # Player's turn if computer is leading
+        valid_cards = [card for card in player_cards if card[1] == lead_suit]
+        while True:
+            decision = input("Choose a card to play (Ace, 2, 3, 4, 5, 6, 7, 8, 9, 10, Jack, Queen): ").strip()
+            rank, _,suit = decision.partition(' of ')
+            player_card = (rank, suit)
+            if player_card not in player_cards:
+                print("Invalid card. Please choose a card from your hand.")
+                continue
+                
+            if valid_cards and player_card not in valid_cards:
+                    print(f"Invalid card. You must follow suit. {lead_suit}")
+                    continue
+            player_cards.remove(player_card) # removes card from player's hand
+            break
+                
+    print(f"Player 1 plays {player_card[0]} of {player_card[1]}")
+    print(f"Computer plays {computer_card[0]} of {computer_card[1]}")
+    
+    # To determine winner
+    winner = play(player_card, computer_card, lead_suit)
+    if winner == "Player":
+        player_score += 1
+        leading_player = 1 # player leads next round
+    else:
+        computer_score += 1
+        leading_player = 2  # computer leads next round
+    
+    # Reveal and discard card from deck
+    if deck_remainder:
+        removed_card = deck_remainder.pop()
+        print(f"Revealed and discarded card: {removed_card[0]} of {removed_card[1]}")
+        
+    # Re-deal 4 cards when player and computer have 4 cards left
+    if len(player_cards) == 4 and len(deck_remainder) >= 8:
+        print("Re-dealing 4 cards to each player")
+        player_cards += deck_remainder[:4]
+        computer_cards += deck_remainder[4:8]
+        deck_remainder = deck_remainder[8:]
+    
+    # Increment current round
+    current_round += 1
+    
+# Decide winner and display scores
+print("Game over")
+if player_score == 0 and computer_score == 16:
+    print("You shot the moon!, You win with 17 points!")
+elif computer_score == 0 and player_score == 16:
+    print("Computer shot the moon!, Computer wins with 17 points!")
+elif player_score > computer_score:
+    print(f"You win with {player_score} points!, Computer: {computer_score} points")
+elif computer_score > player_score:
+    print(f"Computer wins with {computer_score} points!, You: {player_score} points")
+else:
+    print("It's a tie!")
+    
