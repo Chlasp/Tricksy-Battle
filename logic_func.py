@@ -7,11 +7,14 @@ def get_card_value(card): # get the nuremical value of a card
     return rank_values[rank]
 
 def follow_suit(hand, suit): # check if a player has a card of a certain suit
-    return any(card[1] == suit for card in hand)
+    cards_of_same_suit = [card for card in hand if card[1] == suit]
+    if cards_of_same_suit:
+        return random.choice(cards_of_same_suit)
+    return random.choice(hand)
 
 def play(card1, card2, lead_suit):
     if card1[1] == lead_suit and card2[1] != lead_suit:
         return "Player"
-    if card2[2] == lead_suit and card2[2] != lead_suit:
+    if card2[1] == lead_suit and card1[1] != lead_suit:
         return "Computer"
     return "Player" if get_card_value(card1) > get_card_value(card2) else "Computer"

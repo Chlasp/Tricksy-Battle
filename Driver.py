@@ -29,19 +29,32 @@ computer_score = 0
 current_round = 1
 leading_player = random.choice([1, 2]) # random player leads first
 
+# Get number of rounds player wants to play
+while True:
+    try:
+        max_rounds = int(input("Please input the number of rounds you want to play(even numbers only between 2 and 16): "))
+        if max_rounds % 2 == 0 and 2 <= max_rounds <= 16:
+            break
+        else:
+            print("Please enter an even number between 2 and 16.")
+    except ValueError:
+        print("Please enter a valid number.")
 # Game loop
-while current_round <= 16:
+while current_round <= max_rounds:
     # Display current round
     print(f"Round {current_round}")
 
     # Display leading player
-    print(f"Leading player: Player {leading_player}")
+    print(f"Leading player: ", "You" if leading_player == 1 else "Computer")
 
     # Display player cards
-    print(f"Player 1 cards: {player_cards}")
+    print(f"Player's cards: {player_cards}")
     if leading_player == 1:
         while True:
-            decision = input("Choose a card to play (Ace, 2, 3, 4, 5, 6, 7, 8, 9, 10, Jack, Queen): ").strip()
+            decision = input("Choose a card to play (Input is case sensitive): ").strip()
+            if decision.lower() == "quit": # allows player to wuit the game whenever they want
+                print("You quit the game.")
+                break
             rank, _,suit = decision.partition(' of ')
             player_card = (rank, suit)
             if player_card in player_cards:
@@ -62,7 +75,7 @@ while current_round <= 16:
         # Player's turn if computer is leading
         valid_cards = [card for card in player_cards if card[1] == lead_suit]
         while True:
-            decision = input("Choose a card to play (Ace, 2, 3, 4, 5, 6, 7, 8, 9, 10, Jack, Queen): ").strip()
+            decision = input("Choose a card to play (Input is case sensitive): ").strip()
             rank, _,suit = decision.partition(' of ')
             player_card = (rank, suit)
             if player_card not in player_cards:
@@ -75,13 +88,13 @@ while current_round <= 16:
             player_cards.remove(player_card) # removes card from player's hand
             break
                 
-    print(f"Player 1 plays {player_card[0]} of {player_card[1]}")
+    print(f"You play {player_card[0]} of {player_card[1]}")
     print(f"Computer plays {computer_card[0]} of {computer_card[1]}")
     
     # To determine winner
     winner = play(player_card, computer_card, lead_suit)
     if winner == "Player":
-        player_score += 1
+        player_score += 1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
         leading_player = 1 # player leads next round
     else:
         computer_score += 1
@@ -114,4 +127,4 @@ elif computer_score > player_score:
     print(f"Computer wins with {computer_score} points!, You: {player_score} points")
 else:
     print("It's a tie!")
-    
+        
