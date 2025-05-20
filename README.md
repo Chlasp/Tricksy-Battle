@@ -26,3 +26,7 @@ The highest card in the lead suit wins the round. After a set number of rounds, 
 - If you are following suit and you have a matching card, you must play it<br />
 - After the final round, the score and winner are displayed<br />
 - You can also quit the game anytime by typing "quit"<br />
+
+<br /> ADDITIONAL FEATURES <br />
+- Time tracking <br />- The game tracks how long each round takes, and the cumulative time is displayed at the end
+- Score progress Graph <br /> - After the game ends, a line graph shows the progress of the player's score across rounds
