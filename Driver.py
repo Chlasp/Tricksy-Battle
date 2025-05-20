@@ -161,5 +161,6 @@ plt.xlabel("Round")
 plt.ylabel("Score")
 plt.title("Score Trend")
 plt.legend()
+plt.savefig("score_trend.png")
 plt.show()
         
