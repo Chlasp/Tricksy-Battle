@@ -1,6 +1,11 @@
 import random
 from logic_func import *
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+import time
 
+round_scores = []
 redeal_count = 0
 game_running = True
 # list of card names and ranks
@@ -41,6 +46,7 @@ while True:
             print("Please enter an even number between 2 and 16.")
     except ValueError:
         print("Please enter a valid number.")
+game_start_time = time.time()
 # Game loop
 while current_round <= max_rounds and game_running:
     # Display current round
@@ -124,7 +130,9 @@ while current_round <= max_rounds and game_running:
             redeal_count += 1
     elif redeal_count == 2 and len(deck_remainder) == 4:
         print("No more cards will be dealt")
-    
+     
+    round_time = time.time() - game_start_time
+    round_scores.append({"Round" : current_round, "Player" : player_score, "Computer" : computer_score, "Elapsed Time (s)": round(round_time, 2)})
     # Increment current round
     current_round += 1
     
@@ -140,4 +148,18 @@ elif computer_score > player_score:
     print(f"Computer wins with {computer_score} points!, You: {player_score} points")
 else:
     print("It's a tie!")
+
+# print total game time after end of game
+total_time = time.time() - game_start_time
+print(f"Total game time: {round(total_time, 2)} seconds")
+    
+# Create Dataframe and plot score trends
+game_data = pd.DataFrame(round_scores)
+sns.lineplot(data= game_data, x="Round", y="Player", label="Player")
+sns.lineplot(data= game_data, x="Round", y="Computer", label="Computer")
+plt.xlabel("Round")
+plt.ylabel("Score")
+plt.title("Score Trend")
+plt.legend()
+plt.show()
         
